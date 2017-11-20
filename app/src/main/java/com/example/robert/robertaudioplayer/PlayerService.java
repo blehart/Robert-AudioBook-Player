@@ -103,6 +103,7 @@ public class PlayerService extends Service {
 
     public void pause(){
         mPlayer.pause();
+        playlist.save(mPlayer.getCurrentPosition());
         if (timerRunning) pauseTimer();
     }
 
@@ -114,8 +115,15 @@ public class PlayerService extends Service {
         return mPlayer.isPlaying();
     }
 
-    public void seekTo(int value){
+    public void seekToLocal(int value){
         mPlayer.seekTo(value);
+        playlist.save(mPlayer.getCurrentPosition());
+    }
+
+    public void seekToGlobal(int value){
+        playlist.jumpTo(playlist.findTrack(value));
+        mPlayer.seekTo(value - playlist.getElapsedTime());
+        playlist.save(mPlayer.getCurrentPosition());
     }
 
     public int getCurrentPosition(){
@@ -142,7 +150,7 @@ public class PlayerService extends Service {
     }
 
     public int getElapsedTime(){
-        return playlist.getElapsedTime(playlist.getTrack()) + mPlayer.getCurrentPosition() / 1000 * 1000;
+        return playlist.getElapsedTime() + mPlayer.getCurrentPosition();
     }
 
     public String getPlaylistName(){

@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">RobertAudioPlayer</string>
-    <string name="action_addPlaylist">Add playlist</string>
+    <string name="action_selectFolder">Select Folder</string>
     <string name="sleeptimer">Sleep Timer</string>
 </resources>

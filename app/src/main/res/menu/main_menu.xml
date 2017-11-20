@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/action_addPlaylist"
-        android:title="@string/action_addPlaylist"
+        android:id="@+id/action_selectFolder"
+        android:title="@string/action_selectFolder"
         android:icon="@drawable/options"
         android:showAsAction="always"/>
 </menu>

@@ -2,8 +2,10 @@ package com.example.robert.robertaudioplayer;
 
 import android.media.MediaMetadataRetriever;
 import android.util.Log;
+
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,71 +13,75 @@ import java.util.ArrayList;
 class Playlist implements Serializable {
 
     private static final String TAG = "Playlist";
+
+    // File path of this playlist's folder
     private String playlistPath;
+
+    // Name of this playlist's folder
     private String playlistName;
-    private int track = 0;
+
+    // Position in the current track, only used when saving/loading the playlist
     private int trackPosition;
+
+    // Length of entire playlist
     private int totalTime;
-    private int[] elapsedTime;
+
+    // At index 5, gives the total time of files 1-4
+    private ArrayList<Integer> elapsedTime;
+
+    // List of file names
     private ArrayList<String> tracks;
 
-    Playlist(File folder, ArrayList<String> list){
+    // Index of current file in tracks
+    private int track = 0;
+
+    // Create a playlist of all the audio files in the given folder
+    Playlist(File folder) {
         playlistName = folder.getName();
         playlistPath = folder.getPath();
-        tracks = list;
         track = 0;
-        elapsedTime = new int[list.size()];
-        trackPosition =  0;
+        totalTime = 0;
+        elapsedTime = new ArrayList<>();
+        trackPosition = 0;
+
         MediaMetadataRetriever meta = new MediaMetadataRetriever();
-        for (int i = 0; i < list.size(); i++){
-            elapsedTime[i] = totalTime;
-            meta.setDataSource(playlistPath + "/" + list.get(i));
+        tracks = new ArrayList<>();
+        File[] files = folder.listFiles(new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".mp3") || name.endsWith(".m4a");
+            }
+        });
+        for (File file : files) {
+            tracks.add(file.getName());
+            elapsedTime.add(totalTime);
+            meta.setDataSource(file.getPath());
             totalTime += Integer.parseInt(meta.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
         }
     }
 
-    String next(){
-        track++;
-        return jumpTo(track);
-    }
-
-    String current(){
-        return jumpTo(track);
-    }
-
-    String jumpTo(int track){
-        this.track = track;
-        if (track >= tracks.size()){
+    // Return the filepath of the track at index
+    String jumpTo(int index) {
+        track = index;
+        if (track >= tracks.size()) {
             return null;
         }
         return playlistPath + "/" + tracks.get(track);
     }
 
-    int getTrackPosition(){
-        return trackPosition;
+    // Return the filepath of the current track
+    String current() {
+        return jumpTo(track);
     }
 
-    int getElapsedTime(int track){
-        return elapsedTime[track];
+    // Return the filepath of the next track
+    String next() {
+        track++;
+        return jumpTo(track);
     }
 
-    int getTrack(){
-        return track;
-    }
-
-    int getTotalTime() {
-        return totalTime;
-    }
-
-    String getPlaylistName(){
-        return playlistName;
-    }
-
-    String getTrackName(){
-        return tracks.get(track);
-    }
-
-    void save(int currentPosition){
+    // Write this playlist instance to a file in this playlist's folder named playlistName.txt
+    void save(int currentPosition) {
         Log.i(TAG, "Save");
         trackPosition = currentPosition;
         try {
@@ -84,10 +90,37 @@ class Playlist implements Serializable {
             objectOutputStream.writeObject(this);
             objectOutputStream.close();
             objectOutputStream.close();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    // Return the index of the track plays at time
+    int findTrack(int time){
+        for (int i = 0; i < elapsedTime.size(); i++){
+            if (elapsedTime.get(i) > time) return i-1;
+        }
+        return elapsedTime.size() - 1;
+    }
+
+    int getTrackPosition() {
+        return trackPosition;
+    }
+
+    int getElapsedTime() {
+        return elapsedTime.get(track);
+    }
+
+    int getTotalTime() {
+        return totalTime;
+    }
+
+    String getPlaylistName() {
+        return playlistName;
+    }
+
+    String getTrackName() {
+        return tracks.get(track);
+    }
 }
 
