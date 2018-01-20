@@ -9,6 +9,7 @@ import java.io.FilenameFilter;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 class Playlist implements Serializable {
 
@@ -52,6 +53,7 @@ class Playlist implements Serializable {
                 return name.endsWith(".mp3") || name.endsWith(".m4a") || name.endsWith(".m4b");
             }
         });
+        Arrays.sort(files);
         for (File file : files) {
             tracks.add(file.getName());
             elapsedTime.add(totalTime);
