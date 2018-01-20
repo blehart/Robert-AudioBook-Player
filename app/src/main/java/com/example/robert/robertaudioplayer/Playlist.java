@@ -49,7 +49,7 @@ class Playlist implements Serializable {
         File[] files = folder.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
-                return name.endsWith(".mp3") || name.endsWith(".m4a");
+                return name.endsWith(".mp3") || name.endsWith(".m4a") || name.endsWith(".m4b");
             }
         });
         for (File file : files) {
