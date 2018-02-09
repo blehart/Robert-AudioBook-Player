@@ -4,7 +4,7 @@ Features:
   * Global progress and seek.
   * File progress and seek.
   * Sleep Timer
-  * 0.5-4.0x speed
+  * 0.5-2.5x speed
   * Saves progress
 
 Limitations:
