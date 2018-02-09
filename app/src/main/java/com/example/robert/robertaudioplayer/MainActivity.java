@@ -343,7 +343,7 @@ public class MainActivity extends Activity {
         });
 
         SeekBar mPlaySpeedBar = (SeekBar) findViewById(R.id.playSpeedBar);
-        mPlaySpeedBar.setMax(350);
+        mPlaySpeedBar.setMax(199);
         mPlaySpeedBar.setProgress((int)((mService.getSpeed() - .5f) * 100));
         tvPlaySpeed.setText(String.format("%.1fx", mService.getSpeed()));
         mPlaySpeedBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
